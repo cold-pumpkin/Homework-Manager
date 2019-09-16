@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.NtoS.myapp.dao.IMemberRepository">
+	<!-- 회원 가입 -->
+	<insert id="insertMember" parameterType="com.NtoS.myapp.model.MemberVO">
+		insert into members(
+			member_name, email, member_depart,password)
+		values (
+			#{memberName}, #{email}, #{memberDepart},#{password})
+	</insert>
+	
+	<!-- 회원 탈퇴 -->
+	<delete id="deleteMember">
+		delete from members 
+		where member_name=#{memberName} and email=#{email}	
+	</delete>
+	
+	<!-- 회원 정보(이름, 소속) 수정 -->	<!-- 이메일은 readonly로? -->
+	<update id="updateMember" parameterType="com.NtoS.myapp.model.MemberVO">
+		update members 
+		set member_depart=#{memberDepart},  email=#{email}, password=#{password} 
+		where member_name=#{memberName}
+	</update>
+	
+	<!-- 모든 멤버 정보 조회 -->
+	<!-- 
+	<select id="getMemberInfoList" resultType="com.NtoS.myapp.model.MemberVO">
+		select m.member_name as memberName, 
+			   m.member_email as email, 
+			   m.member_depart as memberDepart, 
+			   u.homework_title as homeworkTitle, 
+			   u.file_upload_date as fileUploadDate, 
+			   w.writing_title as writingTitle, 
+			   w.writing_upload_date as writingUploadDate 
+			   from members m 
+			   left join upload_file u
+			   on m.member_email=u.file_uploader_email
+			   left join writing w
+			   on m.member_email=w.email
+	</select> -->
+	
+	
+	<!-- 멤버 정보 조회 -->
+	<select id="getMemberInfo" resultType="com.NtoS.myapp.model.MemberVO">
+		select member_name as memberName, email as email , member_depart as memberDepart, password as password
+		from members
+		where password=#{password} and email=#{email}
+	</select>  
+</mapper>

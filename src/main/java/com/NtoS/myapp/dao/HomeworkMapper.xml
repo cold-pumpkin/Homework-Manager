@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.NtoS.myapp.dao.IHomeworkRepository">
+
+
+	<!--  getMaxFileId(); -->
+		<insert id= "uploadFile" parameterType="com.NtoS.myapp.model.HomeworkVO">
+		INSERT INTO 
+		UPLOAD_FILE 
+			(
+			File_id,
+			DIRECTORY_NAME, 
+			FILE_NAME, 
+			FILE_SIZE, 
+			FILE_CONTENT_TYPE, 
+			email, 
+			FILE_UPLOAD_DATE, 
+			FILE_DATA, 
+			homework_title, 
+			submit_date
+			) 
+		VALUES 
+			(
+			upload_file_seq.nextval,
+			#{directoryName}, 
+			#{fileName}, 
+			#{fileSize}, 
+			#{fileContentType}, 
+			#{email}, 
+			SYSDATE, 
+			#{fileData},
+			#{homeworkTitle},
+			#{submitDate} )
+	</insert>
+	
+	
+	<!-- 
+		List<HomeworkVO> getFileList(@Param("email") String email);//내꺼 전부
+		
+		List<HomeworkVO> getAllFileList();// 관리자 모드에서 모든 회원의 모든 파일리스트
+		
+		HomeworkVO getFile(int fileId);//파일 다운로드
+		
+		String getHomeworkTitle(int fileId);
+		void updateDirectory(HashMap<String,Object>map);
+		
+		void deleteFile(int fileId);
+		void updateFile(HomeworkVO file); -->
+		
+	<!-- <select id="getImageList" parameterType="string" resultType="com.NtoS.myapp.model.HomeworkVO">
+	<![CDATA[
+		SELECT 
+			FILE_ID				AS "fileId", 
+			DIRECTORY_NAME		AS "directoryName", 
+			FILE_NAME			AS "fileName", 
+			FILE_SIZE			AS "fileSize", 
+			FILE_CONTENT_TYPE	AS "fileContentType", 
+			FILE_DATA 			AS "fileData"
+		FROM UPLOAD_FILE 
+		WHERE DIRECTORY_NAME=#{directoryName}
+	]]>
+	</select>
+
+	<select id="getFileList" parameterType="string" resultType="com.NtoS.myapp.model.HomeworkVO">
+	<![CDATA[
+		SELECT 
+			FILE_ID				AS "fileId", 
+			DIRECTORY_NAME		AS "directoryName", 
+			FILE_NAME			AS "fileName", 
+			FILE_SIZE			AS "fileSize", 
+			FILE_CONTENT_TYPE	AS "fileContentType",
+			FILE_UPLOAD_DATE	AS "fileUploadDate"  
+		FROM UPLOAD_FILE 
+		WHERE DIRECTORY_NAME=#{directoryName}
+		ORDER BY FILE_UPLOAD_DATE DESC
+	]]>
+	</select>
+
+	<select id="getAllFileList" resultType="com.NtoS.myapp.model.HomeworkVO">
+	<![CDATA[
+		SELECT 
+			FILE_ID				AS "fileId", 
+			DIRECTORY_NAME		AS "directoryName", 
+			FILE_NAME			AS "fileName", 
+			FILE_SIZE			AS "fileSize", 
+			FILE_CONTENT_TYPE	AS "fileContentType",
+			FILE_UPLOAD_DATE	AS "fileUploadDate" 
+		FROM UPLOAD_FILE
+		ORDER BY FILE_UPLOAD_DATE DESC
+	]]>
+	</select>
+				-->
+	<select id="getFile" parameterType="int" resultType="com.NtoS.myapp.model.HomeworkVO">
+	
+		SELECT 
+			FILE_ID				AS "fileId", 
+			DIRECTORY_NAME		AS "directoryName", 
+			FILE_NAME			AS "fileName", 
+			FILE_SIZE			AS "fileSize", 
+			FILE_CONTENT_TYPE	AS "fileContentType", 
+			FILE_DATA 			AS "fileData"
+		FROM UPLOAD_FILE 
+		WHERE FILE_ID=#{fileId}
+	
+	</select>
+
+	<delete id="deleteFile" parameterType="int">
+	DELETE FROM UPLOAD_FILE 
+		WHERE FILE_ID=#{fileId} 
+	
+	</delete>
+<!-- 
+	<select id="getDirectoryName" parameterType="int" resultType="string">
+	<![CDATA[
+		SELECT 
+			DIRECTORY_NAME		AS "directoryName"
+		FROM UPLOAD_FILE 
+		WHERE FILE_ID=#{fileId}
+	]]>
+	</select>
+	
+	<update id="updateDirectory" parameterType="hashmap">
+	<![CDATA[
+		UPDATE UPLOAD_FILE
+		SET DIRECTORY_NAME=#{directoryName} 
+		WHERE FILE_ID=#{fileId} 
+	]]>
+	</update>
+	
+	<update id="updateUploadedFile" parameterType="com.NtoS.myapp.model.HomeworkVO">
+	<![CDATA[
+		UPDATE UPLOAD_FILE
+		SET DIRECTORY_NAME=#{directoryName}, FILE_NAME=#{fileName},
+		 FILE_SIZE=#{fileSize}, FILE_CONTENT_TYPE=#{fileContentType},
+		  FILE_DATA=#{fileData} 
+		WHERE FILE_ID=#{fileId}
+	]]>
+	</update> -->
+	
+	<select id="getAlList" resultType="com.NtoS.myapp.model.HomeworkVO">
+		select file_id as fileId, directory_name as directoryName, file_name as fileName, file_size as fileSize, file_content_type as fileContentType, 
+		file_upload_date as fileUploadDate, file_data as fileData, email, homework_title as homeworkTitle, submit_date as submitDate 
+		from upload_file
+		where directory_name='알마인드' and email=#{email}
+		order by submit_date desc
+	</select>
+
+	<select id="getNewsList" resultType="com.NtoS.myapp.model.HomeworkVO">
+		select file_id as fileId, directory_name as directoryName, file_name as fileName, file_size as fileSize, file_content_type as fileContentType, 
+		file_upload_date as fileUploadDate, file_data as fileData, email, homework_title as homeworkTitle, submit_date as submitDate 
+		from upload_file
+		where directory_name='사설' and email=#{email} order
+		by submit_date desc
+	</select>
+
+	<select id="getWalkList" resultType="com.NtoS.myapp.model.HomeworkVO">
+		select file_id 		as fileId, 
+		directory_name 		as directoryName, 
+		file_name 			as fileName, 
+		file_size 			as fileSize, 
+		file_content_type 	as fileContentType, 
+		file_upload_date 	as fileUploadDate, 
+		file_data 			as fileData, 
+		email				as email,
+		homework_title 		as homeworkTitle, 
+		submit_date as submitDate 
+		from upload_file
+		where directory_name='만보' and email=#{email} 
+		order by submit_date desc
+	</select>
+	
+	<select id="getAlSubmit" resultType="com.NtoS.myapp.model.HomeworkVO">
+	select file_id 		as fileId, 
+		directory_name 		as directoryName, 
+		file_name 			as fileName, 
+		file_size 			as fileSize, 
+		file_content_type 	as fileContentType, 
+		file_upload_date 	as fileUploadDate, 
+		file_data 			as fileData, 
+		email				as email,
+		homework_title 		as homeworkTitle, 
+		submit_date as submitDate 
+		from upload_file
+		where submit_date = #{submitDate} and email=#{email} and directory_name='알마인드' 
+		order by directory_name desc
+	</select>
+	
+	<select id="getWalkSubmit" resultType="com.NtoS.myapp.model.HomeworkVO">
+	select file_id 		as fileId, 
+		directory_name 		as directoryName, 
+		file_name 			as fileName, 
+		file_size 			as fileSize, 
+		file_content_type 	as fileContentType, 
+		file_upload_date 	as fileUploadDate, 
+		file_data 			as fileData, 
+		email				as email,
+		homework_title 		as homeworkTitle, 
+		submit_date as submitDate 
+		from upload_file
+		where submit_date = #{submitDate} and email=#{email} and directory_name='만보' 
+		order by directory_name desc
+	</select>
+	
+	<select id="getNewsSubmit" resultType="com.NtoS.myapp.model.HomeworkVO">
+	select file_id 		as fileId, 
+		directory_name 		as directoryName, 
+		file_name 			as fileName, 
+		file_size 			as fileSize, 
+		file_content_type 	as fileContentType, 
+		file_upload_date 	as fileUploadDate, 
+		file_data 			as fileData, 
+		email				as email,
+		homework_title 		as homeworkTitle, 
+		submit_date as submitDate 
+		from upload_file
+		where submit_date = #{submitDate} and email=#{email} and directory_name='사설' 
+		order by directory_name desc
+	</select>
+	
+</mapper>

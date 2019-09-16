@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.NtoS.myapp.dao.IWritingRepository">
+	<resultMap type="hashMap" id="insertWriting">
+		<result property="writing_seq.nextval" column="writing_id"/>
+		<result property="email" column="email"/>
+		<result property="writingTitle" column="writing_title"/>
+		<result property="contents" column="contents" jdbcType="CLOB" javaType="java.lang.String"/>
+		<result property="sysdate" column="writing_upload_date"/>
+		
+	</resultMap>
+	<insert id="insertWriting" parameterType="hashMap" >
+		insert into writing (writing_id, 
+		email, 
+		writing_title, 
+		contents, 
+		writing_upload_date) 
+		values(
+		writing_seq.nextval, 
+		#{email}, 
+		#{writingTitle}, 
+		#{contents}, 
+		SYSDATE)
+	</insert>
+	
+	<!-- 일단 보드1에서 보드객체 타입으로 모든 글을 찾아서 리스트 반환 마지막 글이 제일위-->
+	<select id="selectBoardList" resultType="com.NtoS.myapp.model.BoardVO" >
+        SELECT BRDNO, 
+        BRDTITLE, 
+        BRDWRITER, 
+         BRDDATE,
+          BRDHIT 
+          FROM TBL_BOARD
+         ORDER BY BRDNO
+    </select> 
+<!-- 커뮤니티 보드 새 글 삽입처리  -->
+<insert id="insertCommunityBoard" parameterType="com.NtoS.myapp.model.BoardVO" >
+        INSERT INTO TBL_BOARD(BRDNO,BRDTITLE, BRDWRITER , BRDMEMO, BRDDATE)
+        VALUES (BRDNO_SEQ.nextval,#{brdtitle}, #{brdwriter}, #{brdmemo}, sysdate )
+</insert>
+
+<select id="selectCommunityBoard" resultType="com.NtoS.myapp.model.BoardVO">
+		select BRDNO, 
+        BRDTITLE, 
+        BRDWRITER, 
+         BRDDATE,
+         brdmemo
+          FROM TBL_BOARD
+          where brdno=#{brdno}
+</select>
+
+<!-- 업데이트 -->
+<update id="updateCommunityBoard" parameterType="com.NtoS.myapp.model.BoardVO" >
+        update TBL_BOARD set BRDTITLE=#{brdtitle},  BRDMEMO=#{brdmemo}, BRDDATE=sysdate 
+         where brdno=#{brdno}
+</update>
+
+<!-- delete -->
+	<delete id="deleteCommunityBoard">
+		delete from tbl_board
+		where brdno=#{brdno} 
+	</delete>
+	
+	<update id="updateBoard2Read" parameterType="int">
+        UPDATE TBL_BOARD 
+              SET BRDHIT = BRDHIT + 1  
+         WHERE BRDNO=#{brdno}
+</update>
+
+</mapper>
